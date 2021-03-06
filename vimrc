@@ -1,17 +1,19 @@
+set encoding=utf8
+scriptencoding=utf-8
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " 通用设置
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let mapleader = " "      " 定义<leader>键
+let mapleader = ' '      " 定义<leader>键
 
 
 filetype on             " 设置开启文件类型侦测
 filetype plugin on       " 设置加载对应文件类型的插件
-set noeb                 " 关闭错误的提示
+set noerrorbells                 " 关闭错误的提示
 syntax enable            " 开启语法高亮功能
 syntax on                " 自动语法高亮
 set t_Co=2256
 set background=dark
-colorscheme cosme "one "molokai
+colorscheme molokai "one
 let g:solarized_termtrans=1
 set showcmd              " select模式下显示选中的行数
 set ruler                " 总是显示光标位置
@@ -87,8 +89,7 @@ set confirm             " 在处理未保存或只读文件的时候，弹出确
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 set langmenu=zh_CN.UTF-8
 set termencoding=utf-8
-set encoding=utf8
-set fileencodings=utf8,ucs-bom,gbk,cp936,gb2312,gb18030
+
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -110,6 +111,7 @@ Plug 'jiangmiao/auto-pairs'
 Plug 'preservim/nerdtree'
 Plug 'tpope/vim-commentary'
 Plug 'vim-scripts/a.vim'
+Plug 'tenfyzhong/CompleteParameter.vim'
 call plug#end()  
 " gutentags 配置文件
 let g:gutentags_project_root = ['.root', '.svn', '.git', '.hg', '.project']
@@ -189,8 +191,8 @@ nnoremap <silent> <leader>t :TagbarToggle<cr>
 
 
 " LeaderF
-nnoremap <leader>lF :LeaderfFile .<cr>
-nnoremap <leader>lf :LeaderfFunction .<cr>
+nnoremap <leader>lF :LeaderfFile<cr>
+nnoremap <leader>lf :LeaderfFunction<cr>
 nnoremap <leader>lm :LeaderfMru<cr>
 let g:Lf_WildIgnore = {
             \ 'dir': ['.svn','.git','.hg','.vscode','.wine','.deepinwine','.oh-my-zsh'],
@@ -239,3 +241,9 @@ nmap aj <Plug>(ale_next_wrap)
 nmap ad :ALEDetail<cr>
 set cmdheight=2
 let g:echodoc_enable_at_startup=1
+hi Normal ctermfg=252 ctermbg=none
+inoremap <silent><expr> ( complete_parameter#pre_complete("()")
+smap <c-j> <Plug>(complete_parameter#goto_next_parameter)
+imap <c-j> <Plug>(complete_parameter#goto_next_parameter)
+smap <c-k> <Plug>(complete_parameter#goto_previous_parameter)
+imap <c-k> <Plug>(complete_parameter#goto_previous_parameter)
