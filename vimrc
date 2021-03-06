@@ -1,11 +1,11 @@
 set encoding=utf8
 scriptencoding=utf-8
+set langmenu=zh_CN.UTF-8
+set termencoding=utf-8
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " 通用设置
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let mapleader = ' '      " 定义<leader>键
-
-
 filetype on             " 设置开启文件类型侦测
 filetype plugin on       " 设置加载对应文件类型的插件
 set noerrorbells                 " 关闭错误的提示
@@ -14,8 +14,8 @@ syntax on                " 自动语法高亮
 set t_Co=2256
 set background=dark
 colorscheme molokai "one
-let g:solarized_termtrans=1
 set showcmd              " select模式下显示选中的行数
+set cmdheight=2
 set ruler                " 总是显示光标位置
 set laststatus=2         " 总是显示状态栏
 set number               " 开启行号显示
@@ -24,24 +24,11 @@ set whichwrap+=<,>,h,l   " 设置光标键跨行
 set ttimeoutlen=0        " 设置<ESC>键响应时间
 set virtualedit=block,onemore   " 允许光标出现在最后一个字符的后面
 set foldmethod=indent
-nnoremap sl :set splitright<cr>:vsplit<cr>
-nnoremap sh :set nosplitright<cr>:vsplit<cr>
-nnoremap sj :set nosplitbelow<cr>:split<cr>
-nnoremap sk :set splitbelow<cr>:split<cr>
-map <up> :res +5<cr>
-map <down> :res -5<cr>
-map <left> :vertical resize-5<cr>
-map <right> :vertical resize+5<cr>
-nnoremap J 5j
-nnoremap K 5k
-nnoremap tu :table<cr>
-nnoremap tl :+tabnext<cr>
-nnoremap th :-tabnext<cr>
-nnoremap S :w<cr>
-nnoremap Q :q<cr>
-map <leader><leader>dm :delmarks 
-map <leader><leader>m :marks<cr>
-
+let g:echodoc_enable_at_startup=1
+hi Normal ctermfg=252 ctermbg=none
+set updatetime=100
+" 打开文件自动定位到最后编辑的位置
+autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | execute "normal! g'\"" | endif
 """""""""""""``"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " 代码缩进和排版
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -59,6 +46,7 @@ set nowrap               " 禁止折行
 set backspace=2          " 使用回车键正常处理indent,eol,start等
 set sidescroll=10        " 设置向右滚动字符数
 set nofoldenable         " 禁用折叠代码
+set splitbelow
 set relativenumber
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " 代码补全
@@ -84,11 +72,36 @@ set autoread            " 文件在vim之外修改过，自动重新读入
 set autowrite           " 设置自动保存
 set confirm             " 在处理未保存或只读文件的时候，弹出确认
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" 编码设置
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-set langmenu=zh_CN.UTF-8
-set termencoding=utf-8
+
+nnoremap sl :set splitright<cr>:vsplit<cr>
+nnoremap sh :set nosplitright<cr>:vsplit<cr>
+nnoremap sj :set nosplitbelow<cr>:split<cr>
+nnoremap sk :set splitbelow<cr>:split<cr>
+map <up> :res +5<cr>
+map <down> :res -5<cr>
+map <left> :vertical resize-5<cr>
+map <right> :vertical resize+5<cr>
+nnoremap J 5j
+nnoremap K 5k
+nnoremap tu :table<cr>
+nnoremap tl :+tabnext<cr>
+nnoremap th :-tabnext<cr>
+nnoremap S :w<cr>
+nnoremap Q :q<cr>
+nnoremap <leader>H :execute ":help " . expand("<cword>")<cr>
+nnoremap <leader>S :source $MYVIMRC<cr>
+map <leader>dm :delmarks 
+map <leader>m :marks<cr>
+ "分屏窗口移动
+nnoremap <leader>j <c-w>j
+nnoremap <leader>k <c-w>k
+nnoremap <leader>h <c-w>h
+nnoremap <leader>l <c-w>l
+
+inoremap jj <esc>
+vnoremap <leader>p "+p
+nnoremap <leader>y "+y
+nnoremap <leader>nh :noh<cr>
 
 
 
@@ -96,6 +109,8 @@ set termencoding=utf-8
 " 插件列表
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 call plug#begin('~/.vim/plugged')
+Plug 'vim-scripts/DoxygenToolkit.vim'
+Plug 'airblade/vim-gitgutter'
 Plug 'w0rp/ale' 
 Plug 'Shougo/echodoc.vim'
 Plug 'preservim/tagbar'
@@ -129,33 +144,16 @@ if !isdirectory(s:vim_tags)
    silent! call mkdir(s:vim_tags, 'p')
 endif
 
-" 打开当前光标所在单词的vim帮助文档
-nnoremap <leader>H :execute ":help " . expand("<cword>")<cr>
-
-" 重新加载vimrc文件
-nnoremap <leader>S :source $MYVIMRC<cr>
 
 " 安装、更新、删除插件
 nnoremap <leader><leader>i :PlugInstall<cr>
 nnoremap <leader><leader>u :PlugUpdate<cr>
 nnoremap <leader><leader>c :PlugClean<cr>
 
- "分屏窗口移动
-nnoremap <leader>j <c-w>j
-nnoremap <leader>k <c-w>k
-nnoremap <leader>h <c-w>h
-nnoremap <leader>l <c-w>l
 
-inoremap jj <esc>
-vmap <leader><leader>p "+p
-nnoremap <leader><leader>y "+y
-nnoremap <leader>nh :noh<cr>
-
-" 打开文件自动定位到最后编辑的位置
-autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | execute "normal! g'\"" | endif
 
 " nerdtree
-nnoremap <silent> <leader>nt :NERDTreeToggle<cr>
+nnoremap <silent> <leader><leader>nt :NERDTreeToggle<cr>
 let g:NERDTreeFileExtensionHighlightFullName = 1
 let g:NERDTreeExactMatchHighlightFullName = 1
 let g:NERDTreePatternMatchHighlightFullName = 1
@@ -180,41 +178,42 @@ let g:ycm_enable_diagnostic_signs=0
 let g:ycm_enable_diagnostic_highlighting=0
 let g:ycm_error_symbol='K'
 let g:ycm_warning_symbol='O'
-autocmd InsertLeave * if pumvisible() == 0|pclose|endif
-inoremap <expr><cr> pumvisible() ? "\<C-y>" : "\<CR>"
-nnoremap <leader>yd :YcmCompleter GoToDefinition<cr> 
-nnoremap <leader>yi :YcmCompleter GoToInclude<cr>
-nnoremap <leader>yf :YcmCompleter FixIt<cr>
+let g:ycm_autoclose_preview_window_after_insertion = 1
+let g:ycm_add_preview_to_completeopt=0
+"autocmd InsertLeave * if pumvisible() == 0|pclose|endif
+"inoremap <expr><cr> pumvisible() ? "\<C-y>" : "\<CR>"
+nnoremap <leader><leader>yd :YcmCompleter GoToDefinition<cr> 
+nnoremap <leader><leader>yg :YcmCompleter GetDoc<cr>
+nnoremap <leader><leader>yi :YcmCompleter GoToInclude<cr>
+nnoremap <leader><leader>yf :YcmCompleter FixIt<cr>
 " tagbar
 "let g:tagbar_width = 30
-nnoremap <silent> <leader>t :TagbarToggle<cr>
-
+nnoremap <silent> <leader><leader>t :TagbarToggle<cr>
 
 " LeaderF
-nnoremap <leader>lF :LeaderfFile<cr>
-nnoremap <leader>lf :LeaderfFunction<cr>
-nnoremap <leader>lm :LeaderfMru<cr>
+nnoremap <leader><leader>lF :LeaderfFile<cr>
+nnoremap <leader><leader>lf :LeaderfFunction<cr>
+nnoremap <leader><leader>lm :LeaderfMru<cr>
 let g:Lf_WildIgnore = {
             \ 'dir': ['.svn','.git','.hg','.vscode','.wine','.deepinwine','.oh-my-zsh'],
             \ 'file': ['*.sw?','~$*','*.bak','*.exe','*.o','*.so','*.py[co]']
             \}
 let g:Lf_UseCache = 0
 
-
-xmap ea <Plug>(EasyAlign)
-nmap ea <Plug>(EasyAlign)
-nnoremap <leader>rt :RainbowToggle<cr>
+xmap <leader><leader>ea <Plug>(EasyAlign)
+nmap <leader><leader>ea <Plug>(EasyAlign)
+nnoremap <leader><leader>rt :RainbowToggle<cr>
 let g:rainbow_active=1
 au Filetype FILETYPE let b:AutoPairs={"(": ")"}
 
-nnoremap <leader>H :execute ":help " . expand("<cword>")<cr>
 let g:UltiSnipsExpandTrigger = 'oo'
 let g:UltiSnipsListSnippets = '<c-oo>'
 let g:UltiSnipsJumpForwardTrigger = 'oo'
 let g:UltiSnipsJumpBackwardTrigger = '<s-oo>'
-" 头文件和源文件之间的切换
-nnoremap <leader><leader>s  :A<cr>
 
+" a.vim头文件和源文件之间的切换
+nnoremap <leader><leader>s  :A<cr>
+" ale插件
 let g:ale_lint_on_text_changed = 'normal'                     " 代码更改后启动检查
 let g:ale_lint_on_insert_leave = 1                            " 退出插入模式即检查
 let g:ale_sign_error           = '>>'                         " error 告警符号
@@ -231,19 +230,20 @@ let g:ale_cpp_cppcheck_options = ''
 let g:ale_linters = {  'c++': ['clangd'], 
                         \'c': ['clangd'],
                         \'python':['pylint'],}
-" <F9> 触发/关闭代码动态检查
-nnoremap ae :ALEToggle<CR>
+" 触发/关闭代码动态检查
+nnoremap <leader><leader>ae :ALEToggle<CR>
 "普通模式下，ak 前往上一个错误或警告，aj 前往下一个错误或警告
-nmap ak <Plug>(ale_previous_wrap)
-nmap aj <Plug>(ale_next_wrap)
+nmap <leader><leader>ak <Plug>(ale_previous_wrap)
+nmap <leader><leader>aj <Plug>(ale_next_wrap)
 " ad 查看错误或警告的详细信息
+nnoremap <leader><leader>ad :ALEDetail<cr>
 
-nmap ad :ALEDetail<cr>
-set cmdheight=2
-let g:echodoc_enable_at_startup=1
-hi Normal ctermfg=252 ctermbg=none
 inoremap <silent><expr> ( complete_parameter#pre_complete("()")
-smap <c-j> <Plug>(complete_parameter#goto_next_parameter)
-imap <c-j> <Plug>(complete_parameter#goto_next_parameter)
-smap <c-k> <Plug>(complete_parameter#goto_previous_parameter)
-imap <c-k> <Plug>(complete_parameter#goto_previous_parameter)
+snoremap <c-j> <Plug>(complete_parameter#goto_next_parameter)
+inoremap <c-j> <Plug>(complete_parameter#goto_next_parameter)
+snoremap <c-k> <Plug>(complete_parameter#goto_previous_parameter)
+inoremap <c-k> <Plug>(complete_parameter#goto_previous_parameter)
+nnoremap <leader><leader>da :DoxAutor<cr>
+nnoremap <leader><leader>df :Dox<cr>
+nnoremap <leader><leader>db :DoxBlock<cr>
+let g:DoxyenToolkit_briefTag_pre='@Wang'
