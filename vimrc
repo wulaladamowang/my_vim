@@ -1,3 +1,6 @@
+"vim-plug 的安装
+"youcompleteme的编译
+"vim-spector下载对应的调试文件
 set encoding=utf8
 scriptencoding=utf-8
 set langmenu=zh_CN.UTF-8
@@ -6,8 +9,11 @@ set termencoding=utf-8
 " 通用设置
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let mapleader = ' '      " 定义<leader>键
+set history=500
+set mouse=a
 filetype on             " 设置开启文件类型侦测
 filetype plugin on       " 设置加载对应文件类型的插件
+filetype indent on
 set noerrorbells                 " 关闭错误的提示
 syntax enable            " 开启语法高亮功能
 syntax on                " 自动语法高亮
@@ -19,6 +25,8 @@ set cmdheight=2
 set ruler                " 总是显示光标位置
 set laststatus=2         " 总是显示状态栏
 set number               " 开启行号显示
+set lazyredraw
+set showmatch
 set cursorline           " 高亮显示当前行
 set whichwrap+=<,>,h,l   " 设置光标键跨行
 set ttimeoutlen=0        " 设置<ESC>键响应时间
@@ -83,25 +91,17 @@ map <left> :vertical resize-5<cr>
 map <right> :vertical resize+5<cr>
 nnoremap J 5j
 nnoremap K 5k
-nnoremap tu :table<cr>
+nnoremap tu :tabnew<cr>
 nnoremap tl :+tabnext<cr>
 nnoremap th :-tabnext<cr>
+nnoremap tc :tabclose<cr>
 nnoremap S :w<cr>
 nnoremap Q :q<cr>
-nnoremap <leader>H :execute ":help " . expand("<cword>")<cr>
+inoremap jj <esc>
+nnoremap H :execute ":help " . expand("<cword>")<cr>
 nnoremap <leader>S :source $MYVIMRC<cr>
 map <leader>dm :delmarks 
 map <leader>m :marks<cr>
- "分屏窗口移动
-nnoremap <leader>j <c-w>j
-nnoremap <leader>k <c-w>k
-nnoremap <leader>h <c-w>h
-nnoremap <leader>l <c-w>l
-
-inoremap jj <esc>
-vnoremap <leader>p "+p
-nnoremap <leader>y "+y
-nnoremap <leader>nh :noh<cr>
 
 
 
@@ -109,6 +109,9 @@ nnoremap <leader>nh :noh<cr>
 " 插件列表
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 call plug#begin('~/.vim/plugged')
+Plug 'junegunn/fzf.vim'
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all'  }
+Plug 'puremourning/vimspector'
 Plug 'vim-scripts/DoxygenToolkit.vim'
 Plug 'airblade/vim-gitgutter'
 Plug 'w0rp/ale' 
@@ -145,15 +148,6 @@ if !isdirectory(s:vim_tags)
 endif
 
 
-" 安装、更新、删除插件
-nnoremap <leader><leader>i :PlugInstall<cr>
-nnoremap <leader><leader>u :PlugUpdate<cr>
-nnoremap <leader><leader>c :PlugClean<cr>
-
-
-
-" nerdtree
-nnoremap <silent> <leader><leader>nt :NERDTreeToggle<cr>
 let g:NERDTreeFileExtensionHighlightFullName = 1
 let g:NERDTreeExactMatchHighlightFullName = 1
 let g:NERDTreePatternMatchHighlightFullName = 1
@@ -168,7 +162,7 @@ let g:ycm_collect_identifiers_from_tags_files = 1
 let g:ycm_min_num_chars_for_completion=1
 let g:ycm_cache_omnifunc=0
 let g:ycm_seed_identifiers_with_syntax = 1 
-nnoremap <F5> :YcmForceCompileAndDiagnostics<CR>
+nnoremap <leader>yy :YcmForceCompileAndDiagnostics<CR>
 let g:ycm_complete_in_comments = 1 
 let g:ycm_complete_in_strings = 1 
 let g:ycm_collect_identifiers_from_comments_and_strings=0
@@ -182,27 +176,12 @@ let g:ycm_autoclose_preview_window_after_insertion = 1
 let g:ycm_add_preview_to_completeopt=0
 "autocmd InsertLeave * if pumvisible() == 0|pclose|endif
 "inoremap <expr><cr> pumvisible() ? "\<C-y>" : "\<CR>"
-nnoremap <leader><leader>yd :YcmCompleter GoToDefinition<cr> 
-nnoremap <leader><leader>yg :YcmCompleter GetDoc<cr>
-nnoremap <leader><leader>yi :YcmCompleter GoToInclude<cr>
-nnoremap <leader><leader>yf :YcmCompleter FixIt<cr>
-" tagbar
-"let g:tagbar_width = 30
-nnoremap <silent> <leader><leader>t :TagbarToggle<cr>
-
-" LeaderF
-nnoremap <leader><leader>lF :LeaderfFile<cr>
-nnoremap <leader><leader>lf :LeaderfFunction<cr>
-nnoremap <leader><leader>lm :LeaderfMru<cr>
 let g:Lf_WildIgnore = {
             \ 'dir': ['.svn','.git','.hg','.vscode','.wine','.deepinwine','.oh-my-zsh'],
             \ 'file': ['*.sw?','~$*','*.bak','*.exe','*.o','*.so','*.py[co]']
             \}
 let g:Lf_UseCache = 0
 
-xmap <leader><leader>ea <Plug>(EasyAlign)
-nmap <leader><leader>ea <Plug>(EasyAlign)
-nnoremap <leader><leader>rt :RainbowToggle<cr>
 let g:rainbow_active=1
 au Filetype FILETYPE let b:AutoPairs={"(": ")"}
 
@@ -211,8 +190,6 @@ let g:UltiSnipsListSnippets = '<c-oo>'
 let g:UltiSnipsJumpForwardTrigger = 'oo'
 let g:UltiSnipsJumpBackwardTrigger = '<s-oo>'
 
-" a.vim头文件和源文件之间的切换
-nnoremap <leader><leader>s  :A<cr>
 " ale插件
 let g:ale_lint_on_text_changed = 'normal'                     " 代码更改后启动检查
 let g:ale_lint_on_insert_leave = 1                            " 退出插入模式即检查
@@ -230,20 +207,119 @@ let g:ale_cpp_cppcheck_options = ''
 let g:ale_linters = {  'c++': ['clangd'], 
                         \'c': ['clangd'],
                         \'python':['pylint'],}
+"普通模式下，ak 前往上一个错误或警告，aj 前往下一个错误或警告
+"a : ale
+nmap <leader>ak <Plug>(ale_previous_wrap)
+nmap <leader>aj <Plug>(ale_next_wrap)
+" ad 查看错误或警告的详细信息
+nnoremap <leader>ad :ALEDetail<cr>
 " 触发/关闭代码动态检查
 nnoremap <leader><leader>ae :ALEToggle<CR>
-"普通模式下，ak 前往上一个错误或警告，aj 前往下一个错误或警告
-nmap <leader><leader>ak <Plug>(ale_previous_wrap)
-nmap <leader><leader>aj <Plug>(ale_next_wrap)
-" ad 查看错误或警告的详细信息
-nnoremap <leader><leader>ad :ALEDetail<cr>
 
 inoremap <silent><expr> ( complete_parameter#pre_complete("()")
 snoremap <c-j> <Plug>(complete_parameter#goto_next_parameter)
 inoremap <c-j> <Plug>(complete_parameter#goto_next_parameter)
 snoremap <c-k> <Plug>(complete_parameter#goto_previous_parameter)
 inoremap <c-k> <Plug>(complete_parameter#goto_previous_parameter)
+let g:DoxyenToolkit_briefTag_pre='@Wang'
+
+ "分屏窗口移动
+nnoremap <leader>j <c-w>j
+nnoremap <leader>k <c-w>k
+nnoremap <leader>h <c-w>h
+nnoremap <leader>l <c-w>l
+
+nnoremap <leader>nh :noh<cr>
+" nerdtree
+nnoremap <silent> <leader>nt :NERDTreeToggle<cr>
+" y: ycmcompleterme
+nnoremap <leader>yd :YcmCompleter GoToDefinition<cr> 
+nnoremap <leader>yg :YcmCompleter GetDoc<cr>
+nnoremap <leader>yi :YcmCompleter GoToInclude<cr>
+nnoremap <leader>yf :YcmCompleter FixIt<cr>
+" tagbar
+"let g:tagbar_width = 30
+nnoremap <silent> <leader>t :TagbarToggle<cr>
+
+" LeaderF
+nnoremap <leader>leader>lF :LeaderfFile<cr>
+nnoremap <leader>leader>lf :LeaderfFunction<cr>
+nnoremap <leader>leader>lm :LeaderfMru<cr>
+
+xmap <leader><leader>ea <Plug>(EasyAlign)
+nmap <leader><leader>ea <Plug>(EasyAlign)
+nnoremap <leader><leader>rt :RainbowToggle<cr>
+" a.vim头文件和源文件之间的切换
+nnoremap <leader><leader>s  :A<cr>
+" 注释
 nnoremap <leader><leader>da :DoxAutor<cr>
 nnoremap <leader><leader>df :Dox<cr>
 nnoremap <leader><leader>db :DoxBlock<cr>
-let g:DoxyenToolkit_briefTag_pre='@Wang'
+vnoremap <leader><leader>p "+p
+nnoremap <leader><leader>y "+y
+" 安装、更新、删除插件
+nnoremap <leader><leader>I :PlugInstall<cr>
+nnoremap <leader><leader>U :PlugUpdate<cr>
+nnoremap <leader><leader>C :PlugClean<cr>
+"// 2. 添加快捷键<leader>db快速生成.vimspector.json
+""vimspector
+"let g:vimspector_enable_mappings = 'VISUAL_STUDIO'
+""let g:vimspector_base_dir=expand('~/.vim/.vimspectorjson')
+"function! s:read_template_into_buffer(template)
+    "" has to be a function to avoid the extra space fzf#run insers otherwise
+    "execute '0r ~/.vim/.vimspectorjson/'.a:template
+"endfunction
+"command! -bang -nargs=* LoadVimSpectorJsonTemplate call fzf#run({
+            "\   'source': 'ls -1 ~/.vim/.vimspectorjson',
+            "\   'down': 20,
+            "\   'sink': function('<sid>read_template_into_buffer')
+            "\ })
+"noremap <leader>db :tabe .vimspector.json<CR>:LoadVimSpectorJsonTemplate<CR>
+"sign define vimspectorBP text=☛ texthl=Normal
+"sign define vimspectorBPDisabled text=☞ texthl=Normal
+""sign define vimspectorPC text=¶ texthl=SpellBad
+nmap <silent><nowait><space>ds <Plug>VimspectorContinue
+nmap <silent><nowait><space>dn <Plug>VimspectorStepOver
+nmap <silent><nowait><space>do <Plug>VimspectorStepOut
+nmap <silent><nowait><space>di <Plug>VimspectorStepInto
+nmap <silent><nowait><space>db <Plug>VimspectorToggleBreakpoint
+nmap <silent><nowait><space>dr <Plug>VimspectorRestart
+nmap <silent><nowait><space>dp <Plug>VimspectorPause
+nmap <silent><nowait><space>dt <Plug>VimspectorStop
+nmap <silent><nowait><space>df <Plug>VimspectorAddFunctionBreakpoint
+nmap <silent><nowait><space>dc <Plug>VimspectorToggleConditionalBreakpoint
+nmap <silent><nowait><space>dq <Plug>VimspectorReset
+nmap <silent><nowait><space>dC <Plug>VimspectorRunToCursor
+nmap <silent><nowait><space>dB <Plug>VimspectorBalloonEval
+xmap <silent><nowait><space>dB <Plug>VimspectorBalloonEval
+
+nmap <silent><nowait><space>dl :VimspectorShowOutput 
+nmap <silent><nowait><space>de :<C-u>VimspectorEval<space>
+nmap <silent><nowait><space>dw :<C-u>VimspectorWatch<space>
+nmap <A-w> :<C-u>VimspectorWatch<space>
+
+"let g:which_key_map1.d = {
+			"\ 'name' : '+debug',
+			"\ 'e' : 'eval',
+			"\ 'w' : 'variable watch',
+			"\ 's' : 'start or continue',
+			"\ 't' : 'stop',
+			"\ 'r' : 'restart',
+			"\ 'p' : 'pause',
+			"\ 'b' : 'set breakpoint',
+			"\ 'c' : 'set condition breakpoint',
+			"\ 'f' : 'add function breakpoint',
+			"\ 'n' : 'next',
+			"\ 'i' : 'step in',
+			"\ 'o' : 'step out',
+			"\ 'q' : 'quit',
+			"\ 'l' :  {
+			"\ 'name' : '+switch_output',
+			"\ 'c' : 'Console',
+			"\ 'd' : 'stderr',
+			"\ 'o' : 'Vimspector-out',
+			"\ 'e' : 'Vimspector-err',
+			"\ 's' : 'server',
+			"\ 't' : 'Telemetry',
+			"\},
+			"\}
