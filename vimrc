@@ -1,33 +1,41 @@
-"vim-plug 的安装
-"youcompleteme的编译
-"vim-spector下载对应的调试文件
+if empty(glob('~/.vim/autoload/plug.vim'))
+  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
+set nocompatible
+filetype on             " 设置开启文件类型侦测
+filetype plugin on       " 设置加载对应文件类型的插件
+filetype indent on
+filetype plugin indent on
+set mouse=a
 set encoding=utf8
 scriptencoding=utf-8
 set langmenu=zh_CN.UTF-8
 set termencoding=utf-8
+set clipboard=unnamed
+set number               " 开启行号显示
+set relativenumber
+set ruler                " 总是显示光标位置
+set cursorline           " 高亮显示当前行
+syntax enable            " 开启语法高亮功能
+syntax on                " 自动语法高亮
+"set termguicolors
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " 通用设置
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let mapleader = ' '      " 定义<leader>键
 set history=500
-set mouse=a
-filetype on             " 设置开启文件类型侦测
-filetype plugin on       " 设置加载对应文件类型的插件
-filetype indent on
 set noerrorbells                 " 关闭错误的提示
-syntax enable            " 开启语法高亮功能
-syntax on                " 自动语法高亮
 set t_Co=2256
 set background=dark
 colorscheme molokai "one
 set showcmd              " select模式下显示选中的行数
 set cmdheight=2
-set ruler                " 总是显示光标位置
 set laststatus=2         " 总是显示状态栏
-set number               " 开启行号显示
 set lazyredraw
 set showmatch
-set cursorline           " 高亮显示当前行
 set whichwrap+=<,>,h,l   " 设置光标键跨行
 set ttimeoutlen=0        " 设置<ESC>键响应时间
 set virtualedit=block,onemore   " 允许光标出现在最后一个字符的后面
@@ -46,20 +54,29 @@ set cinoptions=g0,:0,N-s,(0    " 设置C/C++语言的具体缩进方式
 set smartindent          " 智能的选择对其方式
 filetype indent on       " 自适应不同语言的智能缩进
 set expandtab            " 将制表符扩展为空格
-set tabstop=4            " 设置编辑时制表符占用空格数
-set shiftwidth=4         " 设置格式化时制表符占用空格数
-set softtabstop=4        " 设置4个空格为制表符
-set smarttab             " 在行和段开始处使用制表符
-set nowrap               " 禁止折行
-set backspace=2          " 使用回车键正常处理indent,eol,start等
-set sidescroll=10        " 设置向右滚动字符数
-set nofoldenable         " 禁用折叠代码
+set tabstop=2            " 设置编辑时制表符占用空格数
+set shiftwidth=2         " 设置格式化时制表符占用空格数
+set softtabstop=2        " 设置4个空格为制表符
+set list 
+set listchars=tab:▸\ ,trail:▫
+set scrolloff=5
+set textwidth=0
+set wrap               " 禁止折行
+set backspace=indent,eol,start           " 使用回车键正常处理indent,eol,start等
+set foldmethod=indent
+set foldlevel=99
 set splitbelow
-set relativenumber
+set splitright
+set laststatus=2
+set autochdir
+set showcmd
+set formatoptions-=tc
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " 代码补全
+"
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 set wildmenu             " vim自身命名行模式智能补全
+set wildmode=longest,list,full
 set tags=./.tags;,.tags
 set tags=/usr/.tags
 "set completeopt-=preview " 补全时不显示窗口，只显示补全列表
@@ -70,6 +87,8 @@ set tags=/usr/.tags
 set hlsearch            " 高亮显示搜索结果
 set incsearch           " 开启实时搜索功能
 set ignorecase          " 搜索时大小写不敏感
+set smartcase
+
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " 缓存设置
@@ -95,13 +114,15 @@ nnoremap tu :tabnew<cr>
 nnoremap tl :+tabnext<cr>
 nnoremap th :-tabnext<cr>
 nnoremap tc :tabclose<cr>
-nnoremap S :w<cr>
-nnoremap Q :q<cr>
-inoremap jj <esc>
+nnoremap ww :w<cr>
+nnoremap qq :q!<cr>
+nnoremap wq :wq<cr>
+inoremap jj <esc>0
 nnoremap H :execute ":help " . expand("<cword>")<cr>
 nnoremap <leader>S :source $MYVIMRC<cr>
 map <leader>dm :delmarks 
 map <leader>m :marks<cr>
+noremap s <nop>
 
 
 
@@ -109,6 +130,10 @@ map <leader>m :marks<cr>
 " 插件列表
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 call plug#begin('~/.vim/plugged')
+Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install_sync() }, 'for' :['markdown', 'vim-plug'] }
+Plug 'dhruvasagar/vim-table-mode', { 'on': 'TableModeToggle' }
+Plug 'godlygeek/tabular'
+Plug 'plasticboy/vim-markdown'
 Plug 'junegunn/fzf.vim'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all'  }
 Plug 'puremourning/vimspector'
@@ -120,16 +145,14 @@ Plug 'preservim/tagbar'
 Plug 'ludovicchabant/vim-gutentags'
 Plug 'junegunn/vim-easy-align', {'on':'<Plug>(EasyAlign)'}
 Plug 'luochen1990/rainbow'
-Plug 'honza/vim-snippets', { 'for':['c','h','cpp','hpp','py','json','vim'] }
+Plug 'honza/vim-snippets'
 Plug 'SirVer/ultisnips'
 Plug 'Yggdroot/LeaderF', {'do': './install.sh'}
 Plug 'preservim/nerdcommenter'
 Plug 'Valloric/YouCompleteMe'
 Plug 'jiangmiao/auto-pairs'
 Plug 'preservim/nerdtree'
-Plug 'tpope/vim-commentary'
 Plug 'vim-scripts/a.vim'
-Plug 'tenfyzhong/CompleteParameter.vim'
 call plug#end()  
 " gutentags 配置文件
 let g:gutentags_project_root = ['.root', '.svn', '.git', '.hg', '.project']
@@ -146,34 +169,62 @@ let g:gutentags_ctags_extra_args += ['--c-kinds=+px']
 if !isdirectory(s:vim_tags)
    silent! call mkdir(s:vim_tags, 'p')
 endif
-
+"
+" markdown
+let g:vim_markdown_math=1
 
 let g:NERDTreeFileExtensionHighlightFullName = 1
 let g:NERDTreeExactMatchHighlightFullName = 1
 let g:NERDTreePatternMatchHighlightFullName = 1
 let g:NERDTreeHighlightFolders = 1         
+nnoremap <leader>yy :YcmForceCompileAndDiagnostics<CR>
 let g:NERDTreeHighlightFoldersFullName = 1 
 
 "" YCM
 "" 如果不指定python解释器路径，ycm会自己搜索一个合适的(与编译ycm时使用的python版本匹配)
 "" let g:ycm_server_python_interpreter = '/usr/bin/python2.7'
 let g:ycm_confirm_extra_conf=0
-let g:ycm_collect_identifiers_from_tags_files = 1
-let g:ycm_min_num_chars_for_completion=1
-let g:ycm_cache_omnifunc=0
-let g:ycm_seed_identifiers_with_syntax = 1 
-nnoremap <leader>yy :YcmForceCompileAndDiagnostics<CR>
-let g:ycm_complete_in_comments = 1 
-let g:ycm_complete_in_strings = 1 
-let g:ycm_collect_identifiers_from_comments_and_strings=0
-let g:ycm_max_num_identifier_candidates=50
-let g:ycm_auto_triger=1
-let g:ycm_enable_diagnostic_signs=0
-let g:ycm_enable_diagnostic_highlighting=0
-let g:ycm_error_symbol='K'
-let g:ycm_warning_symbol='O'
-let g:ycm_autoclose_preview_window_after_insertion = 1
+set completeopt=menu,menuone,noinsert,noselect
+" ---------------------------------------------------------------
+"  diagnostic
+let g:ycm_show_diagnostics_ui=0
+let g:ycm_enable_diagnostic_signs = 1
+let g:ycm_enable_diagnostic_highlighting = 0
+
+" ---------------------------------------------------------------
+" trigger
+let g:ycm_min_num_of_chars_for_completion=2
+let g:ycm_min_num_identifier_candidate_chars = 2
+" with . and ->
+let g:ycm_auto_trigger = 1
+
+" ---------------------------------------------------------------
+" UI
 let g:ycm_add_preview_to_completeopt=0
+let g:ycm_max_num_candidates=50
+let g:ycm_autoclose_preview_window_after_completion = 0
+let g:ycm_autoclose_preview_window_after_insertion = 1
+
+" ---------------------------------------------------------------
+" identifier database
+" with the keywords of the programming language you're writing
+let g:ycm_use_ultisnips_completer=1
+let g:ycm_collect_identifiers_from_tags_files=0
+let g:ycm_collect_identifiers_from_comments_and_strings=1
+let g:ycm_complete_in_strings = 1
+let g:ycm_seed_identifiers_with_syntax=0
+
+" ---------------------------------------------------------------
+" Others
+let g:ycm_cache_omnifunc=0
+let g:ycm_disable_for_files_larger_than_kb = 1000
+
+
+nnoremap <leader>yd :YcmCompleter GoToDefinition<cr> 
+nnoremap <leader>yg :YcmCompleter GetDoc<cr>
+nnoremap <leader>yi :YcmCompleter GoToInclude<cr>
+nnoremap <leader>yf :YcmCompleter FixIt<cr>
+nnoremap <leader>yy :YcmForceCompileAndDiagnostics<CR>
 "autocmd InsertLeave * if pumvisible() == 0|pclose|endif
 "inoremap <expr><cr> pumvisible() ? "\<C-y>" : "\<CR>"
 let g:Lf_WildIgnore = {
@@ -188,7 +239,7 @@ au Filetype FILETYPE let b:AutoPairs={"(": ")"}
 let g:UltiSnipsExpandTrigger = 'oo'
 let g:UltiSnipsListSnippets = '<c-oo>'
 let g:UltiSnipsJumpForwardTrigger = 'oo'
-let g:UltiSnipsJumpBackwardTrigger = '<s-oo>'
+let g:UltiSnipsJumpBackwardTrigger = 'pp'
 
 " ale插件
 let g:ale_lint_on_text_changed = 'normal'                     " 代码更改后启动检查
@@ -232,19 +283,14 @@ nnoremap <leader>l <c-w>l
 nnoremap <leader>nh :noh<cr>
 " nerdtree
 nnoremap <silent> <leader>nt :NERDTreeToggle<cr>
-" y: ycmcompleterme
-nnoremap <leader>yd :YcmCompleter GoToDefinition<cr> 
-nnoremap <leader>yg :YcmCompleter GetDoc<cr>
-nnoremap <leader>yi :YcmCompleter GoToInclude<cr>
-nnoremap <leader>yf :YcmCompleter FixIt<cr>
 " tagbar
 "let g:tagbar_width = 30
 nnoremap <silent> <leader>t :TagbarToggle<cr>
 
 " LeaderF
-nnoremap <leader>leader>lF :LeaderfFile<cr>
-nnoremap <leader>leader>lf :LeaderfFunction<cr>
-nnoremap <leader>leader>lm :LeaderfMru<cr>
+nnoremap <leader><leader>lF :LeaderfFile<cr>
+nnoremap <leader><leader>lf :LeaderfFunction<cr>
+nnoremap <leader><leader>lm :LeaderfMru<cr>
 
 xmap <leader><leader>ea <Plug>(EasyAlign)
 nmap <leader><leader>ea <Plug>(EasyAlign)
@@ -255,7 +301,7 @@ nnoremap <leader><leader>s  :A<cr>
 nnoremap <leader><leader>da :DoxAutor<cr>
 nnoremap <leader><leader>df :Dox<cr>
 nnoremap <leader><leader>db :DoxBlock<cr>
-vnoremap <leader><leader>p "+p
+nnoremap <leader><leader>p "+p
 nnoremap <leader><leader>y "+y
 " 安装、更新、删除插件
 nnoremap <leader><leader>I :PlugInstall<cr>
@@ -264,20 +310,18 @@ nnoremap <leader><leader>C :PlugClean<cr>
 "// 2. 添加快捷键<leader>db快速生成.vimspector.json
 ""vimspector
 "let g:vimspector_enable_mappings = 'VISUAL_STUDIO'
-""let g:vimspector_base_dir=expand('~/.vim/.vimspectorjson')
-"function! s:read_template_into_buffer(template)
-    "" has to be a function to avoid the extra space fzf#run insers otherwise
-    "execute '0r ~/.vim/.vimspectorjson/'.a:template
-"endfunction
-"command! -bang -nargs=* LoadVimSpectorJsonTemplate call fzf#run({
-            "\   'source': 'ls -1 ~/.vim/.vimspectorjson',
-            "\   'down': 20,
-            "\   'sink': function('<sid>read_template_into_buffer')
-            "\ })
-"noremap <leader>db :tabe .vimspector.json<CR>:LoadVimSpectorJsonTemplate<CR>
-"sign define vimspectorBP text=☛ texthl=Normal
-"sign define vimspectorBPDisabled text=☞ texthl=Normal
-""sign define vimspectorPC text=¶ texthl=SpellBad
+let g:vimspector_base_dir=expand('~/.vim/.vimspectorjson')
+function! s:read_template_into_buffer(template)
+   " has to be a function to avoid the extra space fzf#run insers otherwise
+    execute '0r ~/.vim/.vimspectorjson/'.a:template
+endfunction
+command! -bang -nargs=* LoadVimSpectorJsonTemplate call fzf#run({
+            \   'source': 'ls -1 ~/.vim/.vimspectorjson',
+            \   'down': 20,
+            \   'sink': function('<sid>read_template_into_buffer')
+            \ })
+noremap <leader>dj :tabe .vimspector.json<CR>:LoadVimSpectorJsonTemplate<CR>
+"sign define vimspectorPC text=¶ texthl=SpellBad
 nmap <silent><nowait><space>ds <Plug>VimspectorContinue
 nmap <silent><nowait><space>dn <Plug>VimspectorStepOver
 nmap <silent><nowait><space>do <Plug>VimspectorStepOut
@@ -298,28 +342,72 @@ nmap <silent><nowait><space>de :<C-u>VimspectorEval<space>
 nmap <silent><nowait><space>dw :<C-u>VimspectorWatch<space>
 nmap <A-w> :<C-u>VimspectorWatch<space>
 
-"let g:which_key_map1.d = {
-			"\ 'name' : '+debug',
-			"\ 'e' : 'eval',
-			"\ 'w' : 'variable watch',
-			"\ 's' : 'start or continue',
-			"\ 't' : 'stop',
-			"\ 'r' : 'restart',
-			"\ 'p' : 'pause',
-			"\ 'b' : 'set breakpoint',
-			"\ 'c' : 'set condition breakpoint',
-			"\ 'f' : 'add function breakpoint',
-			"\ 'n' : 'next',
-			"\ 'i' : 'step in',
-			"\ 'o' : 'step out',
-			"\ 'q' : 'quit',
-			"\ 'l' :  {
-			"\ 'name' : '+switch_output',
-			"\ 'c' : 'Console',
-			"\ 'd' : 'stderr',
-			"\ 'o' : 'Vimspector-out',
-			"\ 'e' : 'Vimspector-err',
-			"\ 's' : 'server',
-			"\ 't' : 'Telemetry',
-			"\},
-			"\}
+nnoremap <leader>r :call CompileRunGcc()<CR>
+func! CompileRunGcc()
+  exec "w"
+  if &filetype == 'c'
+    exec "!g++ % -o %<"
+    exec "!time ./%<"
+  elseif &filetype == 'cpp'
+    exec "!g++ % -o %<"
+    exec "!time ./%<"
+  elseif &filetype == 'java'
+    exec "!javac %"
+    exec "!time java %<"
+  elseif &filetype == 'sh'
+    :!time bash %
+  elseif &filetype == 'python'
+    silent! exec "!clear"
+    exec "!time python3 %"
+  elseif &filetype == 'html'
+    exec "!firefox % &"
+  elseif &filetype == 'markdown'
+    exec "MarkdownPreview"
+  elseif &filetype == 'vimwiki'
+    exec "MarkdownPreview"
+  endif
+endfunc
+" ===
+" === MarkdownPreview
+" ===
+let g:mkdp_auto_start = 0
+let g:mkdp_auto_close = 1
+let g:mkdp_refresh_slow = 0
+let g:mkdp_command_for_global = 0
+let g:mkdp_open_to_the_world = 0
+let g:mkdp_open_ip = ''
+"let g:mkdp_browser = ''
+let g:mkdp_echo_preview_url = 0
+let g:mkdp_browserfunc = ''
+let g:mkdp_preview_options = {
+    \ 'mkit': {},
+    \ 'katex': {},
+    \ 'uml': {},
+    \ 'maid': {},
+    \ 'disable_sync_scroll': 0,
+    \ 'sync_scroll_type': 'middle',
+    \ 'hide_yaml_meta': 1
+    \ }
+let g:mkdp_markdown_css = ''
+let g:mkdp_highlight_css = ''
+let g:mkdp_port = ''
+let g:mkdp_page_title = '「${name}」'
+" ===
+" === vim-table-mode
+" ===
+map <LEADER>tm :TableModeToggle<CR>
+autocmd Filetype markdown inoremap ,f <Esc>/<++><CR>:nohlsearch<CR>c4l
+autocmd Filetype markdown inoremap ,n ---<Enter><Enter>
+autocmd Filetype markdown inoremap ,b **** <++><Esc>F*hi
+autocmd Filetype markdown inoremap ,s ~~~~ <++><Esc>F~hi
+autocmd Filetype markdown inoremap ,i ** <++><Esc>F*i
+autocmd Filetype markdown inoremap ,d `` <++><Esc>F`i
+autocmd Filetype markdown inoremap ,c ```<Enter><++><Enter>```<Enter><Enter><++><Esc>4kA
+autocmd Filetype markdown inoremap ,h ====<Space><++><Esc>F=hi
+autocmd Filetype markdown inoremap ,p ![](<++>) <++><Esc>F[a
+autocmd Filetype markdown inoremap ,a [](<++>) <++><Esc>F[a
+autocmd Filetype markdown inoremap ,1 #<Space><Enter><++><Esc>kA
+autocmd Filetype markdown inoremap ,2 ##<Space><Enter><++><Esc>kA
+autocmd Filetype markdown inoremap ,3 ###<Space><Enter><++><Esc>kA
+autocmd Filetype markdown inoremap ,4 ####<Space><Enter><++><Esc>kA
+autocmd Filetype markdown inoremap ,l --------<Enter>
