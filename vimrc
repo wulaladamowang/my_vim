@@ -8,6 +8,7 @@ filetype on             " 设置开启文件类型侦测
 filetype plugin on       " 设置加载对应文件类型的插件
 filetype indent on
 filetype plugin indent on
+
 set mouse=a
 set encoding=utf8
 scriptencoding=utf-8
@@ -21,7 +22,6 @@ set cursorline           " 高亮显示当前行
 syntax enable            " 开启语法高亮功能
 syntax on                " 自动语法高亮
 "set termguicolors
-
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " 通用设置
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""

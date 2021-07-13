@@ -1,0 +1,166 @@
+if empty(glob('~/.vim/autoload/plug.vim'))
+  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
+call plug#begin('~/.vim/plugged')
+Plug 'scrooloose/nerdtree'
+Plug 'preservim/nerdcommenter'
+Plug 'luochen1990/rainbow'
+Plug 'itchyny/lightline.vim'
+Plug 'crusoexia/vim-monokai'
+Plug 'neoclide/coc.nvim', {'branch':'release'}
+Plug 'Yggdroot/LeaderF',{'do': ':LeaderfInstallCExtension'}
+Plug 'jiangmiao/auto-pairs'
+Plug 'SirVer/ultisnips'
+Plug 'honza/vim-snippets'
+Plug 'junegunn/vim-easy-align',{'on':'<Plug>(EasyAlign)'}
+Plug 'vim-scripts/a.vim'
+Plug 'vim-scripts/DoxygenToolkit.vim'
+Plug 'airblade/vim-gitgutter'
+call plug#end()
+
+
+set nocompatible "设置兼容性，扩展vi功能，不一定满足vi功能
+set encoding=utf-8 " 设置字符显示
+scriptencoding=utf-8
+set langmenu=zh_CN.UTF-8
+set termencoding=utf-8
+set mouse=a
+set clipboard=unnamed "设置可以使用系统剪切板
+set number
+set relativenumber
+set ruler
+set cursorline
+set noerrorbells "关闭错误提示
+set showcmd "select 模式下显示选中的行数
+set laststatus=2
+set lazyredraw "提高vim响应
+set showmatch
+set virtualedit=block,onemore "允许光标出现在最后一个字符的后面
+set foldmethod=indent
+set cindent
+set cinoptions=g0,:0,N-s,(0
+set smartindent
+set list
+set listchars=tab:▸\ ,trail:▫
+set scrolloff=5
+set backspace=indent,eol,start
+set autochdir
+set wildmenu
+set wildmode=longest,list,full
+set hlsearch
+set incsearch
+set ignorecase
+set smartcase
+set nobackup
+set noswapfile
+set autoread
+set autowrite
+set confirm
+set ts=4
+set expandtab
+set autoindent
+set shiftwidth=4
+set foldmethod=manual
+nnoremap <leader>nh :noh<cr>
+
+filetype on
+filetype plugin on
+filetype indent on
+syntax enable
+syntax on
+
+let mapleader = ' '
+nnoremap sl :set splitright<cr>:vsplit<cr>
+nnoremap sh :set nosplitright<cr>:vsplit<cr>
+nnoremap sk :set splitbelow<cr>:split<cr>
+nnoremap sj :set nosplitbelow<cr>:split<cr>
+nnoremap <leader>j <c-w>j
+nnoremap <leader>k <c-w>k
+nnoremap <leader>h <c-w>h
+nnoremap <leader>l <c-w>l
+map <up> :res +5<cr>
+map <down> :res -5<cr>
+map <left> :vertical resize-5<cr>
+map <right> :vertical resize+5<cr>
+nnoremap J 5j
+nnoremap K 5k
+nnoremap tu :tabnew<cr>
+nnoremap tl :+tabnext<cr>
+nnoremap tr :-tabnext<cr>
+nnoremap tc :tabclose<cr>
+nnoremap ww :w<cr>
+nnoremap qq :q!<cr>
+nnoremap wq :wq<cr>
+inoremap jj <esc>0
+inoremap jk <esc>
+nnoremap H :execute ":help " . expand("<cword>")<cr>
+nnoremap <leader>S :source $MYVIMRC<cr>
+map <leader>dm :delmarks
+map <leader>m :marks<cr>
+noremap s <nop>
+nnoremap <leader><leader>p "+p
+nnoremap <leader><leader>y "+y
+
+"插件注释
+let g:rainbow_active=1
+nnoremap <silent> <leader>nt :NERDTreeToggle<cr>
+let g:NERDTreeFileExtensionHighlightFullName = 1
+let g:NERDTreeExactMatchHighlightFullName=1
+let g:NERDTreePatternMatchHighlighyFullName = 1
+let g:NERDTreeHighlightFolders = 1
+let g:NERDTreeHighlightFoldersFullName=1
+"leaderf
+nnoremap <leader>lf :LeaderfFunction<cr>
+nnoremap <leader>lm :LeaderfMru<cr>
+" ultisnips
+let g:UltiSnipsExpandTrigger = '<c-]>'
+let g:UltiSnipsJumpForwardTrigger = '<c-j>'
+let g:UltiSnipsJumpBackwardTrigger = '<c-k>'
+let g:UltiSnipsListSnippets = '<c-[>'
+" easy-align
+nmap ea <Plug>(EasyAlign)
+xmap ea <Plug>(EasyAlign)
+" a.vim
+nnoremap <leader><leader>s :A<cr>
+" docxygen
+
+nnoremap da :DoxAuthor<cr>
+nnoremap df :Dox<cr>
+
+set hidden
+set updatetime=300
+set shortmess+=c
+" Use tab for trigger completion with characters ahead and navigate.
+" NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
+" other plugin before putting this into your config.
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
+" Use <c-space> to trigger completion.
+if has('nvim')
+  inoremap <silent><expr> <c-space> coc#refresh()
+else
+  inoremap <silent><expr> <c-o> coc#refresh()
+endif
+inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
+                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+" Use `[g` and `]g` to navigate diagnostics
+" Use `:CocDiagnostics` to get all diagnostics of current buffer in location list.
+nmap <silent> [g <Plug>(coc-diagnostic-prev)
+nmap <silent> ]g <Plug>(coc-diagnostic-next)
+
+" GoTo code navigation.
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+nmap <leader>rn <Plug>(coc-rename)
