@@ -1,0 +1,20 @@
+vim.keymap.set("n", "<leader>o", ":update<CR> :source<CR>")
+vim.keymap.set("n", "<leader>w", ":write<CR>")
+vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>")
+vim.keymap.set("n", "-", "<CMD>:sp<CR>", { desc = "Split window horizontally" })
+vim.keymap.set("n", "=", "<CMD>:vsp<CR>", { desc = "Split window vertically" })
+vim.keymap.set("n", "J", "<C-w>j", { desc = "up window" })
+vim.keymap.set("n", "K", "<C-w>k", { desc = "down window" })
+vim.keymap.set("n", "H", "<C-w>h", { desc = "left window" })
+vim.keymap.set("n", "L", "<C-w>l", { desc = "right window" })
+-- lua dev
+vim.keymap.set("n", "th", "gt", { noremap = true, desc = "Go to next tab" })
+vim.keymap.set("n", "tl", "gT", { noremap = true, desc = "Go to prev tab" })
+vim.keymap.set("n", "ts", function()
+	vim.cmd("tab split")
+end, { desc = "Open current buffer in new tab" })
+
+vim.keymap.set("n", "<leader>tp", function()
+	vim.cmd("split | terminal ")
+end, { desc = "below terminal" }
+)
